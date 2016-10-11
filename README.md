@@ -65,6 +65,7 @@ In the command line type:
     
 	d. Save the changes to **3pbl.fasta**.
 
+FINAL D3R SEQUENCE
 
 **3pbl.fasta** should look like this:
 
