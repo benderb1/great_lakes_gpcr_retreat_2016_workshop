@@ -35,15 +35,15 @@ In the command line type:
 
 5.  Replace the first line of the file with ">3pbl"
 6.  Be sure to delete the fusion protein in intracellular loop 3:
-    a. Delete `NIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAIGRNTNGVITKDEAEKLFNQDVDAAVRGILRNAKLKPVYDSLDAVRRAALINMVFQMGETGVAGFTNSLRMLQQKRWDEAAVNLAKSRWYNQTPNRAKRVITTFRTGTWDAY` from ICL3
-    b. Add a short connector `AAAAAAAA` in the place of the removed fusion protein
-    c. Save the changes to **3pbl.fasta**.
+	a. Delete `NIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAIGRNTNGVITKDEAEKLFNQDVDAAVRGILRNAKLKPVYDSLDAVRRAALINMVFQMGETGVAGFTNSLRMLQQKRWDEAAVNLAKSRWYNQTPNRAKRVITTFRTGTWDAY` from ICL3
+	b. Add a short connector `AAAAAAAA` in the place of the removed fusion protein
+	c. Save the changes to **3pbl.fasta**.
 
 OR; OBTAIN THE SEQUENCE FOR D3R FROM NCBI:
 
 1.	Go to www.ncbi.nlm.nih.gov/protein/
 2.	Type *DRD3* in the search bar.
-3.  Find the full human sequence
+3. 	Find the full human sequence
 4.	Click the *FASTA* link to see the protein sequence in FASTA format.
 5.	Copy all the sequence information including the line beginning with ">", into a file called **3pbl.fasta**. 
 
@@ -57,6 +57,8 @@ In the command line type:
     b. Delete  `RILTRQNSQCNSVRPGFPQQTLSPDPAHLELKRYYSICQDTALGGPGFQERGGELKREEKTRNSLSPTIAPKLSLEVRKLSNGRLSTSLKLGPPQPR`from ICL3.
     c. Add a short connector `AAAAAAAA` in the place of the removed ICL3 sequence.
     c. Save the changes to **3pbl.fasta**.
+
+
 **3pbl.fasta** should look like this:
 
     >3pbl
