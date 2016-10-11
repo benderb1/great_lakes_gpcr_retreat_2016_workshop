@@ -17,7 +17,7 @@ To start, create your own working directory & move into it by typing:
     mkdir my_model/
     cd my_model/
 
-Prepared files can be copied from the indicated directories into your working directory at any step if you wish to skip creating a particular file yourself.
+Prepared files can be copied from the indicated directories into your working directory at any step if you wish to skip creating a particular file yourself. It is recommended to maintain the same directory architecture (i.e. /rosetta_cm/input_files/) both to ensure the scripts run correctly without modification and as a good way to separate different types of files.
 
 
 ## a. Target Sequence ##
@@ -75,7 +75,7 @@ FINAL D3R SEQUENCE
 
 The prepared **3pbl.fasta** can be found in
 
-     ~/workshop/input_files/
+     ~/rosetta_cm/input_files/
 
 
 
@@ -116,7 +116,7 @@ DOWNLOAD TEMPLATE PDBs:
 	
 	All files (direct from PDB and isolated) are located in directory:
 	
-	~/workshop/template_pdbs/original_files/
+	~/rosetta_cm/template_pdbs/original_files/
 	
 7.	In addition to extra residues, these PDB's contain additional information that is not useful for Rosetta and may cause problems during the modeling. A script has been prepared to remove all of this extraneous information. This script has the following usage: clean_pdb.py \<pdb file\> \<chain letter\>
 
@@ -136,7 +136,7 @@ To make sure that you removed all necessary residues from chain A, compare your 
 Note: Rosetta's threading is very particular with its interpretation of filenames so renaming them is necessary for it to function properly.
 All prepared files for this step can be found in 
 
-    ~/workshop/template_pdbs/
+    ~/rosetta_cm/template_pdbs/
 
 
 ## c. Align target sequence to templates ##
@@ -152,7 +152,7 @@ SIMULTANEOUSLY ALIGN TARGET AND ALL TEMPLATE SEQUENCES:
 
 3.	In Output Format, select Pearson/FASTA
 4.	*Download* the *alignment* to a file called **3pbl_2rh1_4bvn_4iar_5cxv_5dsg.aln**
-5.	**This is an initial alignment. It is important to inspect the alignment to ensure conserved residues, helical spans, and loop regions are in agreement between the targets and templates. A prepared alignment can be found in `~/workshop/alignment_files/3pb_alignments.txt`**
+5.	**This is an initial alignment. It is important to inspect the alignment to ensure conserved residues, helical spans, and loop regions are in agreement between the targets and templates. A prepared alignment can be found in `~/rosetta_cm/alignment_files/3pb_alignments.txt`**
 
 It is recommended that you skip the following step during this tutorial and use the prepared "adjusted alignment" file that you just copied and return to this step while either the hybridize or relax processes are running.
 
@@ -175,7 +175,7 @@ GENERATE 3MER AND 9MER FRAGMENT LIBRARIES:
 4. Put *3pbl* under "Target name"
 5. Copy/paste all text from **3pbl.fasta** into the provided field.
 
-        cat ~/workshop/input_files/3pbl.fasta
+        cat ~/rosetta_com/input_files/3pbl.fasta
     
 6. Click "*Submit*".
 7. See your position in the queue by clicking *Queue* under *Fragment Libraries*. Click on the *job ID* link for your job and refresh to monitor progress until completed.
@@ -185,7 +185,7 @@ GENERATE 3MER AND 9MER FRAGMENT LIBRARIES:
 
 Prepared fragment files can be found in
     
-    ~/workshop/input_files/
+    ~/rosetta_cm/input_files/
 
 
 
@@ -202,12 +202,12 @@ CREATE SPAN FILE USING OCTOPUS PREDICTIONS
 1. Go to [http://octopus.cbr.su.se](http://octopus.cbr.su.se)
 2. Submit the sequence from **3pbl.fasta**
 
-        cat ~/workshop/input_files/3pbl.fasta
+        cat ~/rosetta_cm/input_files/3pbl.fasta
 
 3. *Save* the OCTOPUS *topology file* as **3pbl.octopus**
 4. Convert the OCTOPUS file to a span file using the script:
 
-        ~/workshop/scripts/octopus2span.pl 3pbl.octopus > 3pbl.span
+        ~/rosetta_cm/scripts/octopus2span.pl 3pbl.octopus > 3pbl.span
 
 ## f. Define disulfide bond. ##
 
@@ -215,7 +215,7 @@ The conserved disulfide bond between TM3 and ECL2 needs to be predefined to ensu
 
 The prepared disulfide file can be found at:
 
-	~/workshop/input_files/3pbl.disulfide
+	~/rosetta_cm/input_files/3pbl.disulfide
 
 
 ## 2. Threading ##
@@ -225,7 +225,7 @@ Rosetta's threading requires alignments to be supplied in Grishin format. This i
 
 **It is recommended that you copy the prepared Grishin files into your working directly rather than converting the alignments manually.**
  
-    cd ~/workshop/alignment_files/
+    cd ~/rosetta_cm/alignment_files/
     
 A script has been provided 'make_alignment_files.sh' that converts the optimized alingnment to individual grishin files using an additional list_of_fastas.txt file. Run this command to generate grishin files.
 
@@ -258,7 +258,7 @@ The output files should be named **2rh1_out.pdb** and so on.
 
 Prepared threaded pdbs can be found in
  
-        ~/workshop/threaded_pdbs/
+        ~/rosetta_cm/threaded_pdbs/
 
 
 ## 3. RosettaCM Hybridize ##
@@ -290,7 +290,7 @@ Note that non-membrane versions of these weight files are also included in this 
 
 The weight files are found in the input_files directory
 
-	~/workshop/input_files/
+	~/rosetta_cm/input_files/
 
 ## b. Define hybridize script: rosetta_cm.xml ##
 
@@ -301,7 +301,7 @@ In addition to the hybridize mover, we perform an additional relax step to ensur
 
 The Rosetta scripts file **rosetta_cm.xml** can be found in the input_files directory
 
-	~/workshop/input_files/rosetta_cm.xml
+	~/rosetta_cm/input_files/rosetta_cm.xml
 
 
 
@@ -311,7 +311,7 @@ The options file is a means to clean up the command line. Many Rosetta protocols
 
 The prepared **rosetta_cm.options** can be found in the input_files directory  
 
-	~/workshop/input_files/rosetta_cm.options
+	~/rosetta_cm/input_files/rosetta_cm.options
 
 
 
@@ -319,13 +319,13 @@ The prepared **rosetta_cm.options** can be found in the input_files directory
 
 Run the RosettaCM hybridize protocol using Rosetta Scripts. As mentioned before, make sure all of the appropriate files are in the same directory. For production runs, at least 1000-5000 models should be created. However, note that the number of templates used, the length of the protein, the type of protein etc. all affect sampling size. For the purposes of this tutorial, you will only create one models. 
 
-A bash script run_cm.sh has been prepared to run this. Be sure to run this from the parent directory ~/workshop/
+A bash script run_cm.sh has been prepared to run this. Be sure to run this from the parent directory ~/rosetta_cm/
 
 	./run_cm.sh
 
 This will generate 1 model (as defined in the rosetta_cm.options file) in ~30 minutes: **S_0001.pdb**.
 
-Additional models have already been generated using hybridize and can be found in `~/workshop/output_files/`
+Additional models have already been generated using hybridize and can be found in `~/rosetta_cm/output_files/`
 
 
 
