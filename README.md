@@ -35,8 +35,11 @@ In the command line type:
 
 5.  Replace the first line of the file with ">3pbl"
 6.  Be sure to delete the fusion protein in intracellular loop 3:
+	
 	a. Delete `NIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAIGRNTNGVITKDEAEKLFNQDVDAAVRGILRNAKLKPVYDSLDAVRRAALINMVFQMGETGVAGFTNSLRMLQQKRWDEAAVNLAKSRWYNQTPNRAKRVITTFRTGTWDAY` from ICL3
+	
 	b. Add a short connector `AAAAAAAA` in the place of the removed fusion protein
+	
 	c. Save the changes to **3pbl.fasta**.
 
 OR; OBTAIN THE SEQUENCE FOR D3R FROM NCBI:
@@ -53,10 +56,14 @@ In the command line type:
 
 5.	Replace the first line of the file with ">3pbl"
 6.	Remove the N-terminal region as this region is expected to be disordered and has no template information. Additionally, ICL3 is quite long and likely disordered. We will remove this : 
-    a. Delete `MASLSQLSSHLNYTCGAENSTGASQARPHAY` from the beginning of the sequence.
-    b. Delete  `RILTRQNSQCNSVRPGFPQQTLSPDPAHLELKRYYSICQDTALGGPGFQERGGELKREEKTRNSLSPTIAPKLSLEVRKLSNGRLSTSLKLGPPQPR`from ICL3.
-    c. Add a short connector `AAAAAAAA` in the place of the removed ICL3 sequence.
-    c. Save the changes to **3pbl.fasta**.
+    
+	a. Delete `MASLSQLSSHLNYTCGAENSTGASQARPHAY` from the beginning of the sequence.
+    
+	b. Delete  `RILTRQNSQCNSVRPGFPQQTLSPDPAHLELKRYYSICQDTALGGPGFQERGGELKREEKTRNSLSPTIAPKLSLEVRKLSNGRLSTSLKLGPPQPR`from ICL3.
+    
+	c. Add a short connector `AAAAAAAA` in the place of the removed ICL3 sequence.
+    
+	d. Save the changes to **3pbl.fasta**.
 
 
 **3pbl.fasta** should look like this:
