@@ -80,42 +80,63 @@ The prepared **3pbl.fasta** can be found in
 
 
 ## b. Template structures ##
-Comparative modeling requires template structures to guide the target sequence folding. Since rhodopsin is a class A GPCR and all class A GPCR’s have the same basic structure profile (7 transmembrane helices, 3 intracellular loops, 3 extracellular loops), we will use three class A GPCR crystal structures as templates. These structures are available on the RCSB Protein Data Bank (PDB). The raw structures from the PDB often contain information not necessary for comparative modeling such as attached T4 lysozyme and/or specific ligands. Once a PDB is downloaded for use as a template, this extra information must be removed before it can be used for comparative modeling with RosettaCM.
+Comparative modeling requires template structures to guide the target sequence folding. D3R is a class A GPCR and all class A GPCR’s have the same basic structure profile (7 transmembrane helices, 3 intracellular loops, 3 extracellular loops). We will use templates from other Class A GPCRs identified from a sequence similarity search. These structures are available on the RCSB Protein Data Bank (PDB). The raw structures from the PDB often contain information not necessary for comparative modeling such as attached T4 lysozyme and/or specific ligands. Once a PDB is downloaded for use as a template, this extra information must be removed before it can be used for comparative modeling with RosettaCM.
 
-DOWNLOAD TEMPLATE PDB's:
+IDENTIFY TEMPLATES PDBs:
 
-1.	Go to www.rcsb.org.
-2.	Search for *2RH1*.
+1.	Go to Blastp http://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome
+2.	Copy sequence from **3pbl.fasta** into search query
+3.	Select 'Protein Data Bank proteins(pdb)' in Database search set
+4.	Start search by clicking the 'Blast' button in bottom of page
+
+Top hits for D3R include other bioamine receptors such as the adrenergic, serotonin, and muscarinic receptors. As multiple structures have been determined for redundant receptors, we select the receptor templates that have the best resolution and completeness in tn TM and extracellular loop regions. For this tutorial we will use five templates including the following:
+
+	a. 4iar: 5HT-1B
+	b. 4bvn: B1AR
+	c. 2rh1: B2AR
+	d. 5dsg: M4R
+	e. 5cxv: M1R
+
+DOWNLOAD TEMPLATE PDBs:
+
+1.	Go to www.rcsb.org/pdb/.
+2.	Search for *2rh1*.
 3.	Click *Download Files* -> *PDB File (text)*.
-4.	Remove the T4 lysozyme residues from chain A. These residues appear within the chain A sequence and are numbered 1002-1161. Simply delete any line for chain A residues 1002-1161 (between residues 230 and 263) from **2RH1.pdb**
+4.	Remove the fusion protein residues from chain A. These residues appear within the chain A sequence and are numbered 1002-1161. Simply delete any line for chain A residues 1002-1161 (between residues 230 and 263) from **2rh1.pdb**
 
-	gedit 2RH1.pdb
+	gedit 2rh1.pdb
 	->manually delete lines by highlighting and clicking *delete*
 
-5.	Save changes to **2RH1_ISOLATED.pdb**
-6.	Repeat steps 1 - 5 for *3EML* and *3ODU*. 
-	The extra residues to be removed from **3EML.pdb** include chain A residues numbered 1002-1161 (between residues 208 and 222). 
-	The extra residues to be removed from **3ODU.pdb** include the first 7 residues of chain A (27-33), the end of chain A (residues 303-328) and the lysozyme residues including those numbered 900-901 and 1002-1161 and 1200-1201 (between residues 229 and 230).
+5.	Save changes to **2rh1_ISOLATED.pdb**
+6.	Repeat steps 1 - 5 for *4bvn*,*4iar*,*5dsg*, and *5cxv*. 
+	No extra residues need to be removed from **4bvn.pdb**.
+	The extra residues to be removed from **4iar.pdb** include chain A residues numbered 1001-1106. 
+	The extra residues to be removed from **5dsg.pdb** include chain A residues numbered 1002-1118.
+	The extra residues to be removed from **5cxv.pdb** include chain A residues numbered 1001-1160.
+	
+	All files (direct from PDB and isolated) are located in directory:
+	
+	~/workshop/template_pdbs/original_files/
+	
 7.	In addition to extra residues, these PDB's contain additional information that is not useful for Rosetta and may cause problems during the modeling. A script has been prepared to remove all of this extraneous information. This script has the following usage: clean_pdb.py \<pdb file\> \<chain letter\>
+
+	List all isolated pdbs into a file:
+	ls original_files/\*isolated.pdb > list_of_pdbs.txt
+	
+	Remove the .pdb file extension in the list
+	
+	Run the clean_pdbs.sh command to clean the PDBs and generate a cleaned FASTA file for each
     
-        ~/rosetta_workshop/tutorials/rosetta_cm/scripts/clean_pdb.py 2RH1_ISOLATED A
-        ~/rosetta_workshop/tutorials/rosetta_cm/scripts/clean_pdb.py 3EML_ISOLATED A
-        ~/rosetta_workshop/tutorials/rosetta_cm/scripts/clean_pdb.py 3ODU_ISOLATED A
+        ./clean_pdbs.sh
 
-Running these three commands should yield the files: **2RH1_ISOLATED_A.pdb, 2RH1_A.fasta, 3EML_ISOLATED_A.pdb, 3EML_A.fasta, 3ODU_ISOLATED_A.pdb**, and **3ODU_A.fasta**.
+Running these three commands should yield the files: **2rh1_isolated_A.pdb , 2rh1_isolated_A.fasta, 4bvn_isolated_A.pdb, 4bvn_isolated_A.fasta, 4iar_isolated_A.pdb, 4iar_isolated_A.fasta, 5cxv_isolated_A.pdb, 5cxv_isolated_A.fasta, 5dsg_isolated_A.fasta, 5dsg_isolated_A.fasta**.
 
-To make sure that you removed all necessary residues from chain A, compare your **2RH1_A.fasta, 3EML_A.fasta**, and **3ODU_A.fasta** to those that have already been prepared. They should be identical.
-
-RENAME CLEANED TEMPLATES:
-    
-	    mv 2RH1_ISOLATED_A.pdb 2rh1.pdb
-	    mv 3EML_ISOLATED_A.pdb 3eml.pdb
-	    mv 3ODU_ISOLATED_A.pdb 3odu.pdb
+To make sure that you removed all necessary residues from chain A, compare your fastas to those that have already been prepared. They should be identical.
 
 Note: Rosetta's threading is very particular with its interpretation of filenames so renaming them is necessary for it to function properly.
 All prepared files for this step can be found in 
 
-    ~/rosetta_workshop/tutorials/rosetta_cm/1_setup/
+    ~/workshop/template_pdbs/
 
 
 ## c. Align target sequence to templates ##
@@ -124,36 +145,22 @@ Comparative modeling uses template structures to guide initial placement of targ
 SIMULTANEOUSLY ALIGN TARGET AND ALL TEMPLATE SEQUENCES:
 
 1.	Go to http://www.ebi.ac.uk/Tools/msa/clustalo/
-2.	Copy/paste all sequence information from your four fasta files (**1u19.fasta, 2RH1_A.fasta, 3EML_A.fasta**, and **3ODU_A.fasta** including the ">" header line into clustal.
+2.	Copy/paste all sequence information from your fasta files including the ">" header line into clustal.
 
-        cat *.fasta
+        cat input_files/3pbl.fasta
+	cat template_pdbs/\*.fasta
 
-    ->highlight sequences in terminal and paste them into webserver by clicking the middle mouse button
+3.	In Output Format, select Pearson/FASTA
+4.	*Download* the *alignment* to a file called **3pbl_2rh1_4bvn_4iar_5cxv_5dsg.aln**
+5.	**This is an initial alignment. It is important to inspect the alignment to ensure conserved residues, helical spans, and loop regions are in agreement between the targets and templates. A prepared alignment can be found in `~/workshop/alignment_files/3pb_alignments.txt`**
 
-3.	Leave default settings and click *Submit*
-4.	*Download* the *alignment* to a file called **1u19_2rh1_3eml_3odu.aln**
-
-The prepared alignment can be found in `~/rosetta_workshop/tutorials/rosetta_cm/2_threading/`
-
-5. 	Copy the adjusted alignment file **1u19_2rh1_3eml_3odu_adjusted.aln** to your directory. Don't forget to include the "." at the end of the line:
-
-        cp ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/1u19_2rh1_3eml_3odu_adjusted.aln .
-
-**It is recommended that you skip the following step during this tutorial and use the prepared "adjusted alignment" file that you just copied and return to this step while either the hybridize or relax processes are running.**
+It is recommended that you skip the following step during this tutorial and use the prepared "adjusted alignment" file that you just copied and return to this step while either the hybridize or relax processes are running.
 
 Because comparative modeling uses alignments to assign initial coordinates to the target sequence, it is sometimes necessary to adjust the alignments before threading is performed. This is not an absolute requirement and may vary depending on the target and templates. In this example, we are modeling a class A GPCR that contains 7 transmembrane helices, each of which contains one or more highly conserved residues between class A GPCR’s. The accuracy of our comparative models can be improved if we ensure that our sequence alignment follows certain structural expectations. Our expectations include alignment of the highly conserved residues within each transmembrane helix and helix continuity. In other words, we want to remove any gaps in the transmembrane regions of these alignments. Alignment gaps represent regions in which Rosetta must either insert missing target residues or skip template residues. This may inappropriately disrupt helix regions during the threading process, making Rosetta’s subsequent relaxation steps more difficult.
 
 CLUSTAL format alignments can be edited with a number of sequence alignment editors, or they can be (carefully) adjusted using a text editor.
 
 6.	Manually adjust the alignment using a a sequence alignment editor or text editor. 	
-
-To get an idea of how these alignments were adjusted to align conserved residues and remove trans-membrane gaps, color-coded alignments before and after adjustments were made are provided as open office spreadsheet files. To open the files type *ooffice* and use the *file* *toolbar* to find and open the files.
-
-These files can be found at 
-
-    ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/alignment_analysis.ods
-    ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/alignment_analysis_adjusted.ods
-
 
     
 ## d. Fragment files ##
@@ -165,27 +172,26 @@ GENERATE 3MER AND 9MER FRAGMENT LIBRARIES:
 1. Go to robetta.bakerlab.org and register as an academic or non-profit user.
 2. Go to robetta.bakerlab.org/fragmentsubmit.jsp
 3. Fill in your *username*.
-4. Put *1u19* under "Target name"
-5. Copy/paste all text from **1u19.fasta** into the provided field.
+4. Put *3pbl* under "Target name"
+5. Copy/paste all text from **3pbl.fasta** into the provided field.
 
-        cat ~/rosetta_workshop/tutorials/rosetta_cm/my_model/1u19.fasta
-    ->highlight sequence shown in terminal window. Center the center button of the mouse to paste the sequence into the Robetta *Paste Fasta* window
-
+        cat ~/workshop/input_files/3pbl.fasta
+    
 6. Click "*Submit*".
 7. See your position in the queue by clicking *Queue* under *Fragment Libraries*. Click on the *job ID* link for your job and refresh to monitor progress until completed.
-8. Generating fragment files may take time. While you are waiting for the fragment files, you may continue on through 1.e. and all of step 2.
-9. Once completed, fragment files can be downloaded and should be saved as **1u19_3.frags** and **1u19_9.frags**.
+8. Generating fragment files may take time (up to a day). While you are waiting for the fragment files, you may continue on through 1.e. and all of step 2.
+9. Once completed, fragment files can be downloaded and should be saved as **3pbl-frags.200.3mers** and **3pbl-frags.200.9mers**.
 
 
 Prepared fragment files can be found in
     
-    ~/rosetta_workshop/tutorials/rosetta_cm/1_setup/
+    ~/workshop/input_files/
 
 
 
-## e. Define the membrane region: 1u19.span ##
+## e. Define the membrane region: 3pbl.span ##
 
-Rhodopsin is a membrane protein but we may not know which residues are within the membrane region. This information can be predicted based on the amino acid sequence.
+D3R is a membrane protein but we may not know which residues are within the membrane region. This information can be predicted based on the amino acid sequence.
 
 A "span file" informs Rosetta which portions of the protein exist within the membrane. Rosetta uses this information to apply different scoring terms to soluble residues versus those in the membrane.
 
@@ -194,17 +200,22 @@ There are various topology prediction algorithms available. OCTOPUS makes predic
 CREATE SPAN FILE USING OCTOPUS PREDICTIONS
 
 1. Go to [http://octopus.cbr.su.se](http://octopus.cbr.su.se)
-2. Submit the sequence from **1u19.fasta**
+2. Submit the sequence from **3pbl.fasta**
 
-        cat ~/rosetta_workshop/tutorials/rosetta_cm/my_model/1u19.fasta
-    ->highlight sequence shown in terminal window. Center the center button of the mouse to paste the sequence into the Octopus *Fasta* window
+        cat ~/workshop/input_files/3pbl.fasta
 
-3. *Save* the OCTOPUS *topology file* as **1u19.octopus**
+3. *Save* the OCTOPUS *topology file* as **3pbl.octopus**
 4. Convert the OCTOPUS file to a span file using the script:
 
-        ~/rosetta_workshop/tutorials/rosetta_cm/scripts/octopus2span.pl 1u19.octopus > 1u19.span
+        ~/workshop/scripts/octopus2span.pl 3pbl.octopus > 3pbl.span
 
+## f. Define disulfide bond. ##
 
+The conserved disulfide bond between TM3 and ECL2 needs to be predefined to ensure its formation during RosettaCM hybridization. Based on sequence position we have identified these cysteines as residues 72 and 150. A disulfide file is created which is a space-separated list of cysteine pairs. If multiple disulfides are present, they are listed on subsequent lines.
+
+The prepared disulfide file can be found at:
+
+	~/workshop/input_files/3pbl.disulfide
 
 
 ## 2. Threading ##
@@ -214,14 +225,11 @@ Rosetta's threading requires alignments to be supplied in Grishin format. This i
 
 **It is recommended that you copy the prepared Grishin files into your working directly rather than converting the alignments manually.**
  
-The prepared Grishin alignment files (**1u19_2rh1.grishin, 1u19_3eml.grishin, 1u19_3odu.grishin**) can be copied into your working directory from
+    cd ~/workshop/alignment_files/
+    
+A script has been provided 'make_alignment_files.sh' that converts the optimized alingnment to individual grishin files using an additional list_of_fastas.txt file. Run this command to generate grishin files.
 
-    ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/
-
-    cp  ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/1u19_2rh1.grishin .
-    cp  ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/1u19_3eml.grishin .
-    cp  ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/1u19_3odu.grishin .
-
+    ./make_alignment_files.sh
 
 To manually convert your alignments, you can follow the format specifications to generate three individual alignment files yourself using a linux editing tool such as `gedit`.
 Grishin format specifications:
@@ -240,156 +248,91 @@ Notice that, unlike clustalO, each file contains two sequences, the target and t
 ## b. Thread target sequence over three individual template sequences. ##
 Rosetta's partial thread application will generate .pdb files for each target-template alignment by assigning coordinates from the template pdb onto the aligned residues in the target sequence. This will be run once for each target-template alignment and will result in three threaded .pdb files.
 
-1.	Run the following commands:
+	cd threaded_pdbs/
+	
+We will be running the partial threading using a bash script. This script requires a list of template names in the file template.txt
 
-        ~/rosetta_workshop/rosetta/main/source/bin/partial_thread.default.linuxgccrelease \
-       -in:file:fasta 1u19.fasta -in:file:alignment 1u19_2rh1.grishin -in:file:template_pdb 2rh1.pdb
-
-        ~/rosetta_workshop/rosetta/main/source/bin/partial_thread.default.linuxgccrelease \
-        -in:file:fasta 1u19.fasta -in:file:alignment 1u19_3eml.grishin -in:file:template_pdb 3eml.pdb
-
-        ~/rosetta_workshop/rosetta/main/source/bin/partial_thread.default.linuxgccrelease \
-        -in:file:fasta 1u19.fasta -in:file:alignment 1u19_3odu.grishin -in:file:template_pdb 3odu.pdb
-
-2.	After running these commands, you should have three new pdbs: **2rh1.pdb.pdb, 3eml.pdb.pdb**, and **3odu.pdb.pdb**. For clarity, rename these files appropriately:
-
-        mv 2rh1.pdb.pdb 1u19_on_2rh1.pdb
-        mv 3eml.pdb.pdb 1u19_on_3eml.pdb
-        mv 3odu.pdb.pdb 1u19_on_3odu.pdb
+	./run_partial_thread.sh
+	
+The output files should be named **2rh1_out.pdb** and so on.
 
 Prepared threaded pdbs can be found in
  
-        ~/rosetta_workshop/tutorials/rosetta_cm/2_threading/
-
-
+        ~/workshop/threaded_pdbs/
 
 
 ## 3. RosettaCM Hybridize ##
 
 RosettaCM is capable of breaking up multiple templates and generating hybridized structures that contain pieces from different templates. This provides a more accurate comparative model by including different pieces from each of the threaded structures to include those that are most energetically favorable given the residues in the target sequence. Additionally, this application uses fragments and minor ab initio folding to fill in residues not previously assigned coordinates during the threading process.
 
-This step requires the following files to be in the same directory:
+This step requires the following files:
 
-- **1u19_3.frags** (downloaded during setup)
-- **1u19_9.frags** (downloaded during setup)
-- **1u19_on_2rh1.pdb** (generated during threading)
-- **1u19_on_3eml.pdb** (generated during threading)
-- **1u19_on_3odu.pdb** (generated during threading)
-- **1u19.fasta** (downloaded and altered during setup)
-- **stage1_membrane.wts** (will be created in this step)
-- **stage2_membrane.wts** (will be created in this step)
-- **stage3_rlx_membrane.wts** (will be created in this step)
-- **rosetta_cm.xml** (will be created in this step)
-- **rosetta_cm.options** (will be created in this step)
-- **1u19.span** (generated during setup)
+- **input_files/3pbl-frags.200.3mers** (downloaded during setup)
+- **input_files/3pbl-frags.200.9mers** (downloaded during setup)
+- **threaded_pdbs/2rh1_out.pdb** (generated during threading)
+- **threaded_pdbs/4bvn_out.pdb** (generated during threading)
+- **threaded_pdbs/4iar_out.pdb** (generated during threading)
+- **threaded_pdbs/5cxv_out.pdb** (generated during threading)
+- **threaded_pdbs/5dsg_out.pdb** (generated during threading)
+- **input_files/3pbl.fasta** (downloaded and altered during setup)
+- **input_files/stage1_membrane.wts** (will be created in this step)
+- **input_files/stage2_membrane.wts** (will be created in this step)
+- **input_files/stage3_rlx_membrane.wts** (will be created in this step)
+- **input_files/rosetta_cm.xml** (will be created in this step)
+- **input_files/rosetta_cm.options** (will be created in this step)
+- **input_files/3pbl.span** (generated during setup)
+- **input_files/3pbl.disulfide** (generated during setup)
 
 ## a. Generate the weights files ##
 RosettaCM uses individual scoring weights for each stage. Since this is a membrane protein, we will be using weights that include membrane-specific scoring terms: **stage1_membrane.wts, stage2_membrane.wts**, and **stage3_rlx_membrane.wts**. 
 
-Note that non-membrane versions of these weight files are also included in this directory in case you wish to try RosettaCM with non-membrane proteins. For now, just copy the _membrane.wts files to your working directory. The weight files can be copied into your working directory from `~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/`
+Note that non-membrane versions of these weight files are also included in this directory in case you wish to try RosettaCM with non-membrane proteins. For now, just copy the \_membrane.wts files to your working directory. 
 
-	cp ~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/stage1_membrane.wts .
-	cp ~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/stage2_membrane.wts .
-	cp ~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/stage3_rlx_membrane.wts .
+The weight files are found in the input_files directory
 
-
+	~/workshop/input_files/
 
 ## b. Define hybridize script: rosetta_cm.xml ##
 
 RosettaCM hybridize is run as a Rosetta scripts mover. Therefore, **rosetta_cm.xml** will define the hybridize mover, assign the different weight files to each stage, and list all threaded pdbs. In this example, all threaded files are given identical weights. However, one can adjust individual weights for each threaded pdb, increasing or decreasing the likelihood that fragments from that particular template-threading will appear in the hybrid model.
-The Rosetta scripts file **rosetta_cm.xml** can be copied into your working directory from `~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/`
 
-	cp  ~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/rosetta_cm.xml .
+In addition to the hybridize mover, we perform an additional relax step to ensure diversity in the output backbones and to energetically minimize the hybridized structures.
+
+
+The Rosetta scripts file **rosetta_cm.xml** can be found in the input_files directory
+
+	~/workshop/input_files/rosetta_cm.xml
 
 
 
 ## c. Define options: rosetta_cm.options ##
 
-You can copy the prepared rosetta_cm.options into your working directory from 
+The options file is a means to clean up the command line. Many Rosetta protocols can take additional options to modify the output or direct Rosetta to the input files. Here we define input/output, the number of models to be made, membrane options, relax options, and additional options to aid in the computation.
 
-`~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/`
+The prepared **rosetta_cm.options** can be found in the input_files directory  
 
-	cp ~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/rosetta_cm.options .
+	~/workshop/input_files/rosetta_cm.options
 
 
 
 ## d. Run RosettaCM hybridize ##
 
-Run the RosettaCM hybridize protocol using Rosetta Scripts. As mentioned before, make sure all of the appropriate files are in the same directory. For production runs, at least 10000-15000 models should be created. However, note that the number of templates used, the length of the protein, the type of protein etc. all affect sampling size. For the purposes of this tutorial, you will only create three models. 
+Run the RosettaCM hybridize protocol using Rosetta Scripts. As mentioned before, make sure all of the appropriate files are in the same directory. For production runs, at least 1000-5000 models should be created. However, note that the number of templates used, the length of the protein, the type of protein etc. all affect sampling size. For the purposes of this tutorial, you will only create one models. 
 
-	~/rosetta_workshop/rosetta/main/source/bin/rosetta_scripts.default.linuxgccrelease \
-        @rosetta_cm.options -nstruct 3
+A bash script run_cm.sh has been prepared to run this. Be sure to run this from the parent directory ~/workshop/
 
-This will generate 3 models: **S_0001.pdb, S_0002.pdb, S_0003.pdb**.
+	./run_cm.sh
 
-Models have already been generated using hybridize and can be found in `~/rosetta_workshop/tutorials/rosetta_cm/3_hybridize/`
+This will generate 1 model (as defined in the rosetta_cm.options file) in ~30 minutes: **S_0001.pdb**.
 
-
-
-
-
-## 4. Final relax ##
-Rhodopsin is a membrane protein that contains three intracellular loops, three extracellular loops, and one disulfide bond. Due to the nature of RosettaCM hybridize, initial models are generated without constraint information such as disulfide bonds, or other experimentally-derived constraints that you might want to include such as known atom-pair distances, etc. To refine our models with this additional information we will finalize our models with a relaxation step in the presence of a membrane.
-This step requires the following files to be in the same directory:
-
-- **1u19.span** (generated during setup)
-- **1u19.disulfide** (will be created in this step)
-- **relax.options** (will be created in this step)
-
-
-
-## a. Define disulfide bond: 1u19.disulfide ##
-Experimental evidence may suggest specific constraints you want to impose during your comparative modeling. In this example, we know that there exists a disulfide bond between residues 77 and 154.
- 
-Disulfide constraint files contain one disulfide bond per line and include only the pair of residue position numbers involved for each line. 
-
-The prepared 1u19.disulfide file can be copied into your working directory from `~/rosetta_workshop/tutorials/dosetta_cm/4_relax/`
-
-	cp ~/rosetta_workshop/tutorials/rosetta_cm/4_relax/1u19.disulfide .
-
-
-
-
-## b. Define options: relax.options ##
-This options file will cause Rosetta to set up a membrane environment based on **1u19.span**, fix a disulfide bond between residues 77 and 154, and relax the models using a dualspace Cartesian/fast-relax algorithm that has been shown to provide better results than fast-relax on its own.
-
-The prepared options file **relax.options** can be copied into your working directory from 
-
-`~/rosetta_workshop/tutorials/rosetta_cm/4_relax/`
-
-	cp ~/rosetta_workshop/tutorials/rosetta_cm/4_relax/relax.options .
-
-
-
-## c. Run  relax ##
-Perform this step once per each of the three models generated from hybridize (**S_0001.pdb** through **S_0003.pdb**): Note that for the purpose of this tutorial, the "nstruct" value has been placed at one. Additional relax runs may be necessary for individual cases. 
-
-	~/rosetta_workshop/rosetta/main/source/bin/relax.default.linuxgccrelease \
-        @relax.options -s S_0001.pdb -out:prefix S_0001_relax_ -nstruct 1
-
-	~/rosetta_workshop/rosetta/main/source/bin/relax.default.linuxgccrelease \
-        @relax.options -s S_0002.pdb -out:prefix S_0002_relax_ -nstruct 1
-
-	~/rosetta_workshop/rosetta/main/source/bin/relax.default.linuxgccrelease \
-        @relax.options -s S_0003.pdb -out:prefix S_0003_relax_ -nstruct 1
-
-Final models relax can be found in:
-
-    ~/rosetta_workshop/tutorials/rosetta_cm/4_relax/
-
+Additional models have already been generated using hybridize and can be found in `~/workshop/output_files/`
 
 
 
 ## 5. Final model selection ##
-Due to time constraints, we generated only three models. Ideally, you will generate 10,000 to 15,000 comparative models. From this collection of models you can then select a single comparative model or an ensemble of models. In this example, we will select the top scoring pose as our final comparative model. It is important to visually inspect your final models for any chain-breaks or violations such as broken disulfide bonds or failure to reflect any experimental expectations you may have regarding the structure of your target protein.
+Due to time constraints, we generated only one models. Ideally, you will generate 1000 to 5000 comparative models. From this collection of models you can then select a single comparative model or an ensemble of models. In this example, we will select the top scoring pose as our final comparative model. It is important to visually inspect your final models for any chain-breaks or violations such as broken disulfide bonds or failure to reflect any experimental expectations you may have regarding the structure of your target protein.
 
-The previous step generated a score file for each model, all of which end in .fasc.
-
-COMBINE SCORE FILES AND SORT BY TOTAL POSE SCORE:
-
-	cat *.fasc | sort -nk2 > scores_sorted.txt
-
-This generates **scores_sorted.txt** and the first line is your best model by total pose score.
+We suggest clustering models and selecting representatives from the largest, best scoring clusters.
 
 You can visually inspect this model using pymol or whichever visualization tool you prefer.
 
