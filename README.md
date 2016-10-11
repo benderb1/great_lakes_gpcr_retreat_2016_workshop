@@ -334,6 +334,8 @@ Due to time constraints, we generated only one models. Ideally, you will generat
 
 We suggest clustering models and selecting representatives from the largest, best scoring clusters.
 
+This has previously been done and the top five models by cluster and energy have been deposited into the final_models/ directory.
+
 You can visually inspect this model using pymol or whichever visualization tool you prefer.
 
 
